@@ -14,7 +14,7 @@ To use the client pool, you can just use the following code in your `ConfigureSe
 ``` csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddAzureServiceBusConnectionPool("my-service-bus-name", (builder)=>{
+    services.AddAzureServiceBusConnectionPool("my-service-bus-name", (builder) => {
         builder.AddQueueClient<MyMessage>("items.shipped");
     });
 }

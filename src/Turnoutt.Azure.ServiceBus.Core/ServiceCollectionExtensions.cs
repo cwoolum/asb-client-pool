@@ -5,9 +5,11 @@ using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly:InternalsVisibleTo("Turnoutt.Azure.ServiceBus.Core.UnitTests")]
+using Turnoutt.Azure.ServiceBus.Core;
 
-namespace Turnoutt.Azure.ServiceBus.Core
+[assembly: InternalsVisibleTo("Turnoutt.Azure.ServiceBus.Core.UnitTests")]
+
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {

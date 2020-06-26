@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Turnoutt.Azure.ServiceBus.Core
 {
-    internal interface IServiceBusClientPool
+    public interface IServiceBusClientPool
     {
         Task SendQueueMessageAsync<T>(IList<T> messageList) where T : new();
 
