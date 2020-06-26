@@ -13,6 +13,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Semantic Release
+      uses: cycjimmy/semantic-release-action@v2
+      id: semantic   # Need an `id` for output variables
       
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
