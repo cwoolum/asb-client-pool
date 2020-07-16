@@ -13,7 +13,8 @@ variables:
   major: 0
   # define minor as a counter with the prefix as variable major, and seed as 100.
   minor: 10
-  patch: $[counter(variables['major']+ "."+ variables['minor'], 1)]
+  combinedMajorMinor: ${{ major }}.${{ minor }}
+  patch: $[counter(variables['combinedMajorMinor'], 1)]
 
 steps:
 - task: DotNetCoreCLI@2
