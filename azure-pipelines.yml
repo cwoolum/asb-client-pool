@@ -15,13 +15,9 @@ variables:
   minor: 10
   combinedMajorMinor: $(major).$(minor)
   patch: $[counter(variables['combinedMajorMinor'], 0)]
+  fullVersion: $(combinedMajorMinor).$(patch)
 
 steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |      
-      echo $(variables.patch)
       
 - task: DotNetCoreCLI@2
   inputs:
@@ -39,10 +35,12 @@ steps:
     nobuild: true
     includesymbols: true
     includesource: true
-    versioningScheme: 'off'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'fullVersion'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
