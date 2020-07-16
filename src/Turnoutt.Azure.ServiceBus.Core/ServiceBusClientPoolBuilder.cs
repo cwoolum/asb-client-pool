@@ -8,15 +8,15 @@ namespace Turnoutt.Azure.ServiceBus.Core
     public sealed class ServiceBusClientPoolBuilder
     {
         private readonly ServiceBusConnection _connection;
-
         private MessageEndpointQueueMap _queuePool = new MessageEndpointQueueMap();
-
         private MessageEndpointTopicMap _topicPool = new MessageEndpointTopicMap();
 
         public ServiceBusClientPoolBuilder(ServiceBusConnection connection)
         {
             _connection = connection;
         }
+
+        public ServiceBusConnection Connection => _connection;
 
         internal ReadOnlyDictionary<Type, IQueueClient> QueueMappings => _queuePool.MessageEndpointMappings;
 

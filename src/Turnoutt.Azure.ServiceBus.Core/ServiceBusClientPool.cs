@@ -12,6 +12,7 @@ namespace Turnoutt.Azure.ServiceBus.Core
 {
     internal class ServiceBusClientPool : IServiceBusClientPool
     {
+        private readonly ServiceBusConnection _connection;
         private readonly IDictionary<Type, IQueueClient> _queueMappings;
         private readonly IDictionary<Type, ITopicClient> _topicMappings;
 
@@ -19,6 +20,58 @@ namespace Turnoutt.Azure.ServiceBus.Core
         {
             _topicMappings = builder.TopicMappings;
             _queueMappings = builder.QueueMappings;
+            _connection = builder.Connection;
+        }
+
+        /// <summary>
+        /// Gets the topic client so that message handlers can be registered
+        /// </summary>
+        /// <typeparam name="T">The message type that was registered</typeparam>
+        /// <param name="subscriptionName"></param>
+        /// <param name="receiveMode"></param>
+        /// <param name="retryPolicy"></param>
+        /// <returns></returns>
+
+        public SubscriptionClient GetTopicSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null)
+        {
+            if (!_topicMappings.ContainsKey(typeof(T)))
+            {
+                throw new Exception("Topic has not been registered! Please ensure AddTopicClient has been called for the message type " + typeof(T).Name);
+            }
+
+            var topicMapping = _topicMappings[typeof(T)];
+
+            return new SubscriptionClient(
+                _connection,
+                topicMapping.TopicName,
+                subscriptionName,
+                receiveMode,
+                retryPolicy);
+        }
+
+        /// <summary>
+        /// Gets the queue client so that message handlers can be registered
+        /// </summary>
+        /// <typeparam name="T">The message type that was registered</typeparam>
+        /// <param name="subscriptionName"></param>
+        /// <param name="receiveMode"></param>
+        /// <param name="retryPolicy"></param>
+        /// <returns></returns>
+        public SubscriptionClient GetQueueSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null)
+        {
+            if (!_queueMappings.ContainsKey(typeof(T)))
+            {
+                throw new Exception("Queue has not been registered! Please ensure AddQueueClient has been called for the message type " + typeof(T).Name);
+            }
+
+            var topicMapping = _queueMappings[typeof(T)];
+
+            return new SubscriptionClient(
+                _connection,
+                topicMapping.QueueName,
+                subscriptionName,
+                receiveMode,
+                retryPolicy);
         }
 
         public Task SendQueueMessageAsync<T>(T message) where T : new()
