@@ -24,8 +24,18 @@ namespace Turnoutt.Azure.ServiceBus.Core
             _connection = builder.Connection;
         }
 
-       
-        
+        public IQueueClient GetQueueSubscriptionClient<T>()
+        {
+            if (!_queueMappings.ContainsKey(typeof(T)))
+            {
+                throw new Exception("Queue has not been registered! Please ensure AddQueueClient has been called for the message type " + typeof(T).Name);
+            }
+
+            var topicMapping = _queueMappings[typeof(T)];
+
+            return topicMapping;
+        }
+
         public SubscriptionClient GetTopicSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null)
         {
             if (!_topicMappings.ContainsKey(typeof(T)))
@@ -43,32 +53,19 @@ namespace Turnoutt.Azure.ServiceBus.Core
                 retryPolicy);
         }
 
-       
-        public IQueueClient GetQueueSubscriptionClient<T>()
-        {
-            if (!_queueMappings.ContainsKey(typeof(T)))
-            {
-                throw new Exception("Queue has not been registered! Please ensure AddQueueClient has been called for the message type " + typeof(T).Name);
-            }
-
-            var topicMapping = _queueMappings[typeof(T)];
-
-            return topicMapping;
-        }
-
         public Task SendQueueMessageAsync<T>(T message) where T : new()
         {
-            return SendQueueMessageAsync(new T[1]
+            return SendQueueMessagesAsync(new T[1]
             {
                 message
             });
         }
 
-        public async Task SendQueueMessageAsync<T>(IList<T> messageList) where T : new()
+        public async Task SendQueueMessagesAsync<T>(IList<T> messageList) where T : new()
         {
             var messageTypes = messageList.Select(m => m.GetType()).Distinct();
 
-            EnsureMessagesAreMapped(messageTypes);
+            EnsureQueueMessagesAreMapped(messageTypes);
 
             foreach (var message in messageList)
             {
@@ -80,17 +77,17 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
         public Task SendQueueMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
         {
-            return SendQueueMessageAsync(new JsonSerializedMessage<T>[1]
+            return SendQueueMessagesAsync(new JsonSerializedMessage<T>[1]
             {
                 message
             });
         }
 
-        public async Task SendQueueMessageAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
+        public async Task SendQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
         {
             var messageTypes = messageList.Select(m => m.GetType()).Distinct();
 
-            EnsureMessagesAreMapped(messageTypes);
+            EnsureQueueMessagesAreMapped(messageTypes);
 
             foreach (var message in messageList)
             {
@@ -102,17 +99,17 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
         public Task SendTopicMessageAsync<T>(T message) where T : new()
         {
-            return SendTopicMessageAsync(new T[1]
+            return SendTopicMessagesAsync(new T[1]
             {
                 message
             });
         }
 
-        public async Task SendTopicMessageAsync<T>(IList<T> messageList) where T : new()
+        public async Task SendTopicMessagesAsync<T>(IList<T> messageList) where T : new()
         {
             var messageTypes = messageList.Select(m => m.GetType()).Distinct();
 
-            EnsureMessagesAreMapped(messageTypes);
+            EnsureTopicMessagesAreMapped(messageTypes);
 
             foreach (var message in messageList)
             {
@@ -124,16 +121,16 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
         public Task SendTopicMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
         {
-            return SendTopicMessageAsync(new JsonSerializedMessage<T>[1]
+            return SendTopicMessagesAsync(new JsonSerializedMessage<T>[1]
             {
                 message
             });
         }
 
-        public async Task SendTopicMessageAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
+        public async Task SendTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
         {
             var messageTypes = messageList.Select(m => m.GetType().GetGenericArguments()[0]).Distinct();
-            EnsureMessagesAreMapped(messageTypes);
+            EnsureTopicMessagesAreMapped(messageTypes);
 
             foreach (var message in messageList)
             {
@@ -143,7 +140,19 @@ namespace Turnoutt.Azure.ServiceBus.Core
             }
         }
 
-        internal void EnsureMessagesAreMapped(IEnumerable<Type> messageTypes)
+        internal void EnsureQueueMessagesAreMapped(IEnumerable<Type> messageTypes)
+        {
+            // Check that all of the message types have been registered first
+            foreach (var messageType in messageTypes)
+            {
+                if (!_queueMappings.ContainsKey(messageType))
+                {
+                    throw new MessageNotMappedException($"There is no topic client registered for the message type {messageType}");
+                }
+            }
+        }
+
+        internal void EnsureTopicMessagesAreMapped(IEnumerable<Type> messageTypes)
         {
             // Check that all of the message types have been registered first
             foreach (var messageType in messageTypes)

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 using Microsoft.Azure.ServiceBus;
 
+using Turnoutt.Azure.ServiceBus.Core.Messages;
+
 namespace Turnoutt.Azure.ServiceBus.Core
 {
     /// <summary>
@@ -30,12 +32,20 @@ namespace Turnoutt.Azure.ServiceBus.Core
         /// <returns></returns>
         SubscriptionClient GetTopicSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null);
 
-        Task SendQueueMessageAsync<T>(IList<T> messageList) where T : new();
-
         Task SendQueueMessageAsync<T>(T message) where T : new();
 
-        Task SendTopicMessageAsync<T>(IList<T> messageList) where T : new();
+        Task SendQueueMessageAsync<T>(JsonSerializedMessage<T> message) where T : new();
+
+        Task SendQueueMessagesAsync<T>(IList<T> messageList) where T : new();
+
+        Task SendQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new();
 
         Task SendTopicMessageAsync<T>(T message) where T : new();
+
+        Task SendTopicMessageAsync<T>(JsonSerializedMessage<T> message) where T : new();
+
+        Task SendTopicMessagesAsync<T>(IList<T> messageList) where T : new();
+
+        Task SendTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new();
     }
 }
