@@ -12,7 +12,7 @@ pool:
 variables:
   major: 0
   # define minor as a counter with the prefix as variable major, and seed as 100.
-  minor: 11
+  minor: 12
   combinedMajorMinor: $(major).$(minor)
   patch: $[counter(variables['minor'], 0)]
   fullVersion: $(combinedMajorMinor).$(patch)
