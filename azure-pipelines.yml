@@ -9,18 +9,21 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-
+variables:
+  major: 0
+  # define minor as a counter with the prefix as variable major, and seed as 100.
+  minor: 10
+  patch: $[counter(variables['major']+ "."+ variables['minor'], 1)]
 
 steps:
-
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
+    arguments: '-p:Version=$(major).$(minor).$(patch)'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-
 
 - task: DotNetCoreCLI@2
   inputs:
