@@ -18,7 +18,7 @@ namespace Turnoutt.Azure.ServiceBus.Core
         /// <param name="receiveMode"></param>
         /// <param name="retryPolicy"></param>
         /// <returns></returns>
-        SubscriptionClient GetQueueSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null);
+        IQueueClient GetQueueSubscriptionClient<T>();
 
         /// <summary>
         /// Gets the topic client so that message handlers can be registered

@@ -44,7 +44,7 @@ namespace Turnoutt.Azure.ServiceBus.Core
         }
 
        
-        public SubscriptionClient GetQueueSubscriptionClient<T>(string subscriptionName, ReceiveMode receiveMode = ReceiveMode.PeekLock, RetryPolicy retryPolicy = null)
+        public IQueueClient GetQueueSubscriptionClient<T>()
         {
             if (!_queueMappings.ContainsKey(typeof(T)))
             {
@@ -53,12 +53,7 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
             var topicMapping = _queueMappings[typeof(T)];
 
-            return new SubscriptionClient(
-                _connection,
-                topicMapping.QueueName,
-                subscriptionName,
-                receiveMode,
-                retryPolicy);
+            return topicMapping;
         }
 
         public Task SendQueueMessageAsync<T>(T message) where T : new()
