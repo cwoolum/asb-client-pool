@@ -20,7 +20,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    arguments: '-p:Version=$(major).$(minor).$(patch)'
+    arguments: '-c Release -p:Version=${{variables.major}}.${{variables.minor}}.${{variables.patch}}'
 
 - task: DotNetCoreCLI@2
   inputs:
