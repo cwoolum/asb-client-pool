@@ -1,7 +1,5 @@
 # Azure Service Bus Client Pool
 
-[![Build Status](https://dev.azure.com/turnoutt/Public%20Projects/_apis/build/status/asb-client-pool?branchName=master)](https://dev.azure.com/turnoutt/Public%20Projects/_build/latest?definitionId=34&branchName=master)
-
 This is a library for easily sending Service Bus Topic and Queue messages. Using this Client Pool, you can map messages to topic and queue endpoints. 
 
 Additionally, you inly need to inject one service to access all of your queue and 
