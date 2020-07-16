@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Turnoutt.Azure.ServiceBus.Core\Turnoutt.Azure.ServiceBus.Core.csproj" />
+    <ProjectReference Include="..\..\src\Turnoutt.Azure.ServiceBus.Core\Turnoutt.Azure.ServiceBus.ClientPool.csproj" />
   </ItemGroup>
 
 
