@@ -14,7 +14,7 @@ variables:
   # define minor as a counter with the prefix as variable major, and seed as 100.
   minor: 11
   combinedMajorMinor: $(major).$(minor)
-  patch: $[counter(variables['combinedMajorMinor'], 0)]
+  patch: $[counter(variables['minor'], 0)]
   fullVersion: $(combinedMajorMinor).$(patch)
 
 steps:
@@ -22,7 +22,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    arguments: '-c Release -p:Version=$(major).$(minor).$(patch)'
+    arguments: '-c Release -p:Version=$(major).$(minor).$(patch) /p:AssemblyVersion=$(major).$(minor).$(patch)'
 
 - task: DotNetCoreCLI@2
   inputs:
