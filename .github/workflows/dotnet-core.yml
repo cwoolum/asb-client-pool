@@ -12,11 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Semantic Release
-      uses: cycjimmy/semantic-release-action@v2
-      id: semantic   # Need an `id` for output variables
+    - uses: actions/checkout@v2   
       
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -34,3 +30,11 @@ jobs:
       
     - name: Pack library
       run: dotnet pack
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        # Artifact name
+        name: package
+        # A file, directory or wildcard pattern that describes what to upload
+        path: **/*.nupkg
