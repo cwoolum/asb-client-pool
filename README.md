@@ -1,7 +1,5 @@
 # Azure Service Bus Client Pool
 
-![.NET Core](https://github.com/cwoolum/asb-client-pool/workflows/.NET%20Core/badge.svg)
-
 This is a library for easily sending Service Bus Topic and Queue messages. Using this Client Pool, you can map messages to topic and queue endpoints. 
 
 Additionally, you inly need to inject one service to access all of your queue and 
