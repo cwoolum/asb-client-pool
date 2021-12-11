@@ -4,6 +4,12 @@ namespace System
 {
     public static class SerializationsExtensions
     {
+        /// <summary>
+        /// Uses the JSON Serializer to serialize to a byte array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="byteArray"></param>
+        /// <returns></returns>
         public static T FromByteArray<T>(this byte[] byteArray) where T : class
         {
             if (byteArray == null)
@@ -14,6 +20,12 @@ namespace System
             return JsonSerializer.Deserialize<T>(new ReadOnlySpan<byte>(byteArray));
         }
 
+        /// <summary>
+        /// Uses the JSON Serializer to serialize from a byte array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="byteArray"></param>
+        /// <returns></returns>
         public static byte[] ToByteArray(this object obj)
         {
             if (obj == null)
