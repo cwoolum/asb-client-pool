@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Microsoft.Azure.ServiceBus;
@@ -34,18 +35,34 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
         Task SendQueueMessageAsync<T>(T message) where T : new();
 
+        Task ScheduleQueueMessageAsync<T>(T message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
+
         Task SendQueueMessageAsync<T>(JsonSerializedMessage<T> message) where T : new();
+
+        Task ScheduleQueueMessageAsync<T>(JsonSerializedMessage<T> message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
 
         Task SendQueueMessagesAsync<T>(IList<T> messageList) where T : new();
 
+        Task ScheduleQueueMessagesAsync<T>(IList<T> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
+
         Task SendQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new();
+
+        Task ScheduleQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
 
         Task SendTopicMessageAsync<T>(T message) where T : new();
 
+        Task ScheduleTopicMessageAsync<T>(T message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
+
         Task SendTopicMessageAsync<T>(JsonSerializedMessage<T> message) where T : new();
+
+        Task ScheduleTopicMessageAsync<T>(JsonSerializedMessage<T> message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
 
         Task SendTopicMessagesAsync<T>(IList<T> messageList) where T : new();
 
+        Task ScheduleTopicMessagesAsync<T>(IList<T> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
+
         Task SendTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new();
+
+        Task ScheduleTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new();
     }
 }

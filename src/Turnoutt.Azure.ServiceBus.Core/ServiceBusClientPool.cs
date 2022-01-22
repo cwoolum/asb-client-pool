@@ -53,9 +53,104 @@ namespace Turnoutt.Azure.ServiceBus.Core
                 retryPolicy);
         }
 
+        public Task ScheduleQueueMessageAsync<T>(T message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            return ScheduleQueueMessagesAsync(new T[1]
+            {
+                message
+            }, scheduleEnqueueTimeUtc);
+        }
+
+        public Task ScheduleQueueMessageAsync<T>(JsonSerializedMessage<T> message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            return ScheduleQueueMessagesAsync(new JsonSerializedMessage<T>[1]
+           {
+                message
+           }, scheduleEnqueueTimeUtc);
+        }
+
+        public async Task ScheduleQueueMessagesAsync<T>(IList<T> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            var messageTypes = messageList.Select(m => m.GetType()).Distinct();
+
+            EnsureQueueMessagesAreMapped(messageTypes);
+
+            foreach (var message in messageList)
+            {
+                var mapping = _queueMappings[message.GetType()];
+
+                await mapping.ScheduleMessageAsync(new JsonSerializedMessage<T>(message), scheduleEnqueueTimeUtc);
+            }
+        }
+
+        public async Task ScheduleQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            var messageTypes = messageList.Select(m => m.GetType()).Distinct();
+
+            EnsureQueueMessagesAreMapped(messageTypes);
+
+            foreach (var message in messageList)
+            {
+                var mapping = _queueMappings[message.GetType()];
+
+                await mapping.ScheduleMessageAsync(message, scheduleEnqueueTimeUtc);
+            }
+        }
+
+        public Task ScheduleTopicMessageAsync<T>(T message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            return ScheduleTopicMessagesAsync(new T[1]
+            {
+                message
+            }, scheduleEnqueueTimeUtc);
+        }
+
+        public Task ScheduleTopicMessageAsync<T>(JsonSerializedMessage<T> message, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            return ScheduleTopicMessagesAsync(new JsonSerializedMessage<T>[1]
+            {
+                message
+            }, scheduleEnqueueTimeUtc);
+        }
+
+        public async Task ScheduleTopicMessagesAsync<T>(IList<T> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            var messageTypes = messageList.Select(m => m.GetType()).Distinct();
+
+            EnsureTopicMessagesAreMapped(messageTypes);
+
+            foreach (var message in messageList)
+            {
+                var mapping = _topicMappings[message.GetType()];
+
+                await mapping.ScheduleMessageAsync(new JsonSerializedMessage<T>(message), scheduleEnqueueTimeUtc);
+            }
+        }
+
+        public async Task ScheduleTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList, DateTimeOffset scheduleEnqueueTimeUtc) where T : new()
+        {
+            var messageTypes = messageList.Select(m => m.GetType().GetGenericArguments()[0]).Distinct();
+            EnsureTopicMessagesAreMapped(messageTypes);
+
+            foreach (var message in messageList)
+            {
+                var mapping = _topicMappings[message.GetType().GetGenericArguments()[0]];
+
+                await mapping.ScheduleMessageAsync(message, scheduleEnqueueTimeUtc);
+            }
+        }
+
         public Task SendQueueMessageAsync<T>(T message) where T : new()
         {
             return SendQueueMessagesAsync(new T[1]
+            {
+                message
+            });
+        }
+
+        public Task SendQueueMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
+        {
+            return SendQueueMessagesAsync(new JsonSerializedMessage<T>[1]
             {
                 message
             });
@@ -73,14 +168,6 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
                 await mapping.SendAsync(new JsonSerializedMessage<T>(message));
             }
-        }
-
-        public Task SendQueueMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
-        {
-            return SendQueueMessagesAsync(new JsonSerializedMessage<T>[1]
-            {
-                message
-            });
         }
 
         public async Task SendQueueMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
@@ -105,6 +192,14 @@ namespace Turnoutt.Azure.ServiceBus.Core
             });
         }
 
+        public Task SendTopicMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
+        {
+            return SendTopicMessagesAsync(new JsonSerializedMessage<T>[1]
+            {
+                message
+            });
+        }
+
         public async Task SendTopicMessagesAsync<T>(IList<T> messageList) where T : new()
         {
             var messageTypes = messageList.Select(m => m.GetType()).Distinct();
@@ -117,14 +212,6 @@ namespace Turnoutt.Azure.ServiceBus.Core
 
                 await mapping.SendAsync(new JsonSerializedMessage<T>(message));
             }
-        }
-
-        public Task SendTopicMessageAsync<T>(JsonSerializedMessage<T> message) where T : new()
-        {
-            return SendTopicMessagesAsync(new JsonSerializedMessage<T>[1]
-            {
-                message
-            });
         }
 
         public async Task SendTopicMessagesAsync<T>(IList<JsonSerializedMessage<T>> messageList) where T : new()
