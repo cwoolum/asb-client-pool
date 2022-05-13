@@ -7,18 +7,18 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-2022'
 
 variables:
   major: 0
   # define minor as a counter with the prefix as variable major, and seed as 100.
-  minor: 13
+  minor: 14
   combinedMajorMinor: $(major).$(minor)
   patch: $[counter(variables['minor'], 0)]
   fullVersion: $(combinedMajorMinor).$(patch)
 
 steps:
-      
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
